@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import math
-import matplotlib.pyplot as plt
 
 # Streamlit App: XO PACK Truck Type Recommendation Dashboard
 st.set_page_config(page_title="XO PACK Truck Type Recommendation", layout="wide")
@@ -66,15 +65,15 @@ else:
                 if n20 + n24 + n32 == 0:
                     continue
                 cap_total = (
-                    n20 * capacities["20 ft vehicle"]
-                    + n24 * capacities["24 ft vehicle"]
-                    + n32 * capacities["32 ft vehicle"]
+                    n20 * capacities["20 ft vehicle"] +
+                    n24 * capacities["24 ft vehicle"] +
+                    n32 * capacities["32 ft vehicle"]
                 )
                 if cap_total >= total_volume:
                     cost_total = (
-                        n20 * costs["20 ft vehicle"]
-                        + n24 * costs["24 ft vehicle"]
-                        + n32 * costs["32 ft vehicle"]
+                        n20 * costs["20 ft vehicle"] +
+                        n24 * costs["24 ft vehicle"] +
+                        n32 * costs["32 ft vehicle"]
                     )
                     combos.append({
                         "20 ft": n20,
@@ -89,20 +88,17 @@ else:
     best = combos_df.iloc[0]
 
     st.subheader("Recommended Loading Plan")
-    st.write(f"**Plan:** {int(best['20 ft'])}×20 ft, {int(best['24 ft'])}×24 ft, {int(best['32 ft'])}×32 ft")
+    st.write(
+        f"**Plan:** {int(best['20 ft'])}×20 ft, {int(best['24 ft'])}×24 ft, {int(best['32 ft'])}×32 ft"
+    )
     st.write(f"**Estimated Cost:** {best['Total Cost']:.2f}")
 
     st.subheader("All Feasible Plans")
     st.dataframe(combos_df)
 
-    # Cost comparison graph
+    # Cost comparison graph using Streamlit's chart
     st.subheader("Cost Comparison of Plans")
-    fig, ax = plt.subplots()
-    ax.plot(combos_df.index, combos_df["Total Cost"], marker='o')
-    ax.set_xlabel("Plan Index (sorted by cost)")
-    ax.set_ylabel("Total Cost")
-    ax.set_title("Comparison of Loading Plan Costs")
-    st.pyplot(fig)
+    st.line_chart(combos_df["Total Cost"].rename("Total Cost"))
 
     # Show order details
     st.subheader("Order Details")
