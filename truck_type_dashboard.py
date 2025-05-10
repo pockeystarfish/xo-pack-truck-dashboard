@@ -34,7 +34,7 @@ st.write("Please enter each box's dimensions (cm) and quantity below:")
 initial_df = pd.DataFrame(
     columns=["length", "width", "height", "quantity"]
 )
-df = st.experimental_data_editor(initial_df, num_rows="dynamic")
+df = st.data_editor(initial_df, num_rows="dynamic", use_container_width=True)
 
 # Validate and process order data
 required_cols = ["length", "width", "height", "quantity"]
