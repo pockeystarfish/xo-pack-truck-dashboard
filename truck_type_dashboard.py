@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import math
+import matplotlib.pyplot as plt
 
 # Streamlit App: XO PACK Truck Type Recommendation Dashboard
 st.set_page_config(page_title="XO PACK Truck Type Recommendation", layout="wide")
@@ -83,22 +84,34 @@ else:
                         "Total Cost": cost_total,
                     })
 
-    # Present combinations sorted by cost
+    # Create DataFrame and identify best plan
     combos_df = pd.DataFrame(combos).sort_values("Total Cost").reset_index(drop=True)
-    best = combos_df.iloc[0]
+    best_idx = combos_df.index[0]
 
+    # Recommended Plan
+    best = combos_df.loc[best_idx]
     st.subheader("Recommended Loading Plan")
     st.write(
         f"**Plan:** {int(best['20 ft'])}×20 ft, {int(best['24 ft'])}×24 ft, {int(best['32 ft'])}×32 ft"
     )
     st.write(f"**Estimated Cost:** {best['Total Cost']:.2f}")
 
+    # Highlighted table of all plans
     st.subheader("All Feasible Plans")
-    st.dataframe(combos_df)
+    styled = combos_df.style.apply(
+        lambda row: ['background-color: red' if row.name == best_idx else '' for _ in row], axis=1
+    )
+    st.write(styled)
 
-    # Cost comparison graph using Streamlit's chart
+    # Cost comparison bar chart
     st.subheader("Cost Comparison of Plans")
-    st.line_chart(combos_df["Total Cost"].rename("Total Cost"))
+    fig, ax = plt.subplots()
+    colors = ['red' if i == best_idx else 'blue' for i in combos_df.index]
+    ax.bar(combos_df.index.astype(str), combos_df["Total Cost"], color=colors)
+    ax.set_xlabel("Plan Index (sorted by cost)")
+    ax.set_ylabel("Total Cost")
+    ax.set_title("Comparison of Loading Plan Costs")
+    st.pyplot(fig)
 
     # Show order details
     st.subheader("Order Details")
