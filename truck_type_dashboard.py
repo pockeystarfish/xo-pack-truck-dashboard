@@ -21,7 +21,7 @@ cost_20ft = st.sidebar.number_input("20 ft vehicle cost", min_value=0.0, value=1
 cost_24ft = st.sidebar.number_input("24 ft vehicle cost", min_value=0.0, value=200.0, step=10.0, format="%.2f")
 cost_32ft = st.sidebar.number_input("32 ft vehicle cost", min_value=0.0, value=300.0, step=10.0, format="%.2f")
 
-# Hard-coded truck capacities (m³) from spec sheet
+# Hard-coded truck capacities (m³)
 capacities = {
     "20 ft vehicle": 30.0,
     "24 ft vehicle": 40.0,
@@ -66,15 +66,15 @@ else:
                 if n20 + n24 + n32 == 0:
                     continue
                 cap_total = (
-                    n20 * capacities["20 ft vehicle"] +
-                    n24 * capacities["24 ft vehicle"] +
-                    n32 * capacities["32 ft vehicle"]
+                    n20 * capacities["20 ft vehicle"]
+                    + n24 * capacities["24 ft vehicle"]
+                    + n32 * capacities["32 ft vehicle"]
                 )
                 if cap_total >= total_volume:
                     cost_total = (
-                        n20 * costs["20 ft vehicle"] +
-                        n24 * costs["24 ft vehicle"] +
-                        n32 * costs["32 ft vehicle"]
+                        n20 * costs["20 ft vehicle"]
+                        + n24 * costs["24 ft vehicle"]
+                        + n32 * costs["32 ft vehicle"]
                     )
                     combos.append({
                         "20 ft": n20,
@@ -89,9 +89,7 @@ else:
     best = combos_df.iloc[0]
 
     st.subheader("Recommended Loading Plan")
-    st.write(
-        f"**Plan:** {int(best['20 ft'])}×20 ft, {int(best['24 ft'])}×24 ft, {int(best['32 ft'])}×32 ft"
-    )
+    st.write(f"**Plan:** {int(best['20 ft'])}×20 ft, {int(best['24 ft'])}×24 ft, {int(best['32 ft'])}×32 ft")
     st.write(f"**Estimated Cost:** {best['Total Cost']:.2f}")
 
     st.subheader("All Feasible Plans")
